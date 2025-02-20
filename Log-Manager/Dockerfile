@@ -5,7 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copy the Python script to the container
-COPY app.py .
+COPY logs.py .
 
 # Run the Python script
 CMD ["python", "logs.py"]
