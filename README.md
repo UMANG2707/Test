@@ -4,44 +4,7 @@ This repository follows a structured branching strategy to manage multiple clien
 
 ---
 
-## **Branching Structure**
-
-
-Each **Client (C1, C2, C3, ...)** has a dedicated branch.  
-Within each client branch, multiple **Version (V1, V2, V3, ...)** branches exist to manage different software versions.  
-Each version contains System modules **(F1, F2, F3)**, where each module has Feature directories (Register, Login, Logout).**environment-specific directories (PROD, TEST, UAT)** containing configuration files.
-
-![alt text](images/image.png)
-
-## Project Structure
-
-```
-📦 SimpleAuthApp  
- ├── 📂 HelloWorld  
- │   ├── Dockerfile  
- │   ├── Program.cs   
- ├── 📂 Environments  
- │   ├── 📂 UAT  
- │   │   ├── .env  
- │   ├── 📂 TEST  
- │   │   ├── .env  
- │   ├── 📂 PROD  
- │   │   ├── .env  
- │  
- ├── 📜 docker-compose.yml  
- ├── 📜 README.md  
-
-```
-
-### Justification for This Structure
-
-We are structuring branches based on versions and clients to ensure smooth updates and independent management for each client. According to best practices, all three environments (TEST, UAT, PROD) should be identical for a specific client to maintain consistency. Since the number of environments is finite, we create separate directories for each one.
-
-Using environment variable files, we can make configurations dynamic, allowing different variables per environment. If a specific code change is required only for PROD, it can be handled using conditional checks.
-
-Regarding branching, we maintain separate branches for each client and each version. Additionally, when a new client joins, they will always start with the latest available version to simplify onboarding and avoid maintaining outdated versions.
-
-We are structuring branches as Client/Version (e.g., C1/V1, C1/V2, C2/V1) to keep each client’s versions separate and manageable.
+## **Branching Structure & Repos**
 
 ## Question - 1 - How can you manage the CICD for each type of system for each client with a different version in each environment? 
 
