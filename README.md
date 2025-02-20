@@ -72,4 +72,38 @@ This setup provides **full control over deployments**, allowing seamless updates
 
 - In the configuration repository, clients can use any version of the application for any environment. They can also choose specific image versions for different modules. For example, Client C1 in PROD might use v1 for the .NET module and v4 for the database module.
 
+## Question - 4 Secret key values should be dynamically fetched from database and not hard coded 
+
+## Secret Key Management & Assumptions
+
+### Assumptions for This CI/CD-Focused Setup
+- The **primary focus** is on **CI/CD workflows**, not application code, dependencies, or deployment architecture.
+- The application is considered **containerized**, with each module running as a separate container.
+- Secrets are **not hardcoded** but stored securely in services like **AWS SSM, Secrets Manager, or HashiCorp Vault**.
+- **Docker secrets** are included in repository-specific services for secure access.
+- The project structure is designed to be **simple and adaptable** based on specific use cases.
+
+### CI/CD Pipeline Considerations
+- **Multi-system support**: If system calls refer to different OS environments (Mac, Windows, Ubuntu), the pipeline can build images for each system within a single workflow.
+- **No auto-deployment**: The pipeline does not trigger automatic deployments based on image updates to maintain a **decoupled architecture**.
+  - Example: If **v2 of the DB module** is updated, it does not automatically redeploy all client environments using that image.
+  - However, auto-deployment can be enabled if needed.
+- **Modular structure**: Each module follows **versioned branching** and dynamic tagging for **controlled deployments**.
+
+### Future Enhancements
+- Implement **sequential pipelines** that auto-trigger deployments when a module update affects multiple clients.
+- Improve **secrets management** with more best practices based on detailed use cases.
+
+This setup ensures a **scalable, secure, and modular** CI/CD workflow while keeping deployments flexible and controlled.
+
+
+### Best Practices
+- **No hard-coded secrets**: Secret keys should never be stored directly in the codebase.
+- **Dynamic fetching**: Secrets are securely retrieved from a **database or a secrets manager** at runtime.
+
+### Implementation Approach
+- **Database Storage**: Secret keys are stored in a secure database with proper encryption.
+- **Dynamic Retrieval**: Applications fetch secret keys during runtime instead of storing them in configuration files.
+- **Access Control**: Only authorized services and users can retrieve secrets, ensuring security.
+- **Automatic Rotation**: Implement periodic secret rotation to enhance security and minimize risks.
 
