@@ -3,8 +3,6 @@ FROM python:3.9-slim
 
 # Set the working directory inside the container
 WORKDIR /app
-
-# Copy the Python script to the container
 COPY logs.py .
 
 # Run the Python script
