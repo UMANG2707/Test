@@ -28,3 +28,4 @@ jobs:
 
       - name: Push Docker Image for ${{ matrix.module }}
         run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ matrix.module }}:latest
+
