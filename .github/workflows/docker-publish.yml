@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [API-dotnet, Log-Manager]  # List of modules
+        module: [API-dotnet, Log-Manager, Mobile-Application, Web-App-Angular, db]  # List of modules
 
     steps:
       - name: Checkout Repository
@@ -28,10 +28,10 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t uamng/api-dotnet:${{ env.BRANCH_NAME }} ./${{ matrix.module }}
+          docker build -t uamng/${{ matrix.module }}:${{ env.BRANCH_NAME }} ./${{ matrix.module }}
 
       - name: Push Docker Image
         run: |
-          docker push uamng/api-dotnet:${{ env.BRANCH_NAME }}
+          docker push uamng/${{ matrix.module }}:${{ env.BRANCH_NAME }}
 
 
