@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [API-dotnet, Log-Manager, Web-App-Angular]  # Add all modules here
+        module: [API-dotnet, Log-Manager, Web-App-Angular, Mobile-Application, db]  # Add all modules here
 
     steps:
       - name: Checkout Repository
