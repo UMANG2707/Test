@@ -8,8 +8,6 @@ This repository follows a structured branching strategy to manage multiple clien
 
 ## Question - 1 - How can you manage the CICD for each type of system for each client with a different version in each environment? 
 
-#### ohhh, Since each client uses a different version for each environment, the current strategy would be difficult to manage. So, I’ll restructure it to make it more efficient.
-
 ### Managing CI/CD for Each System, Client, and Version
 Since each client can use different versions across environments, managing everything in a single repository becomes complex. To handle this efficiently, we use two repositories with a sequential pipeline approach:
 
