@@ -79,7 +79,7 @@ This setup provides **full control over deployments**, allowing seamless updates
 ### Assumptions for This CI/CD-Focused Setup
 - The **primary focus** is on **CI/CD workflows**, not application code, dependencies, or deployment architecture.
 - The application is considered **containerized**, with each module running as a separate container.
-- Secrets are **not hardcoded** but stored securely in services like **AWS SSM, Secrets Manager, or HashiCorp Vault**.
+- Secrets are **not hardcoded** but can store it securely in services like **AWS SSM, Secrets Manager, or HashiCorp Vault**.
 - **Docker secrets** are included in repository-specific services for secure access.
 - The project structure is designed to be **simple and adaptable** based on specific use cases.
 
