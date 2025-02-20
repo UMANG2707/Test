@@ -17,6 +17,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Check if Changes Exist in Module
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q "^${{ matrix.module }}/"; then
+            echo "CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "CHANGED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Stop if No Changes
+        if: env.CHANGED == 'false'
+        run: echo "No changes in ${{ matrix.module }}, skipping..." && exit 0
+        
       - name: Extract Branch Name
         run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
 
