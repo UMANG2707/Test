@@ -32,3 +32,15 @@ Yes, this structure makes it easy to manage deployments for each client, environ
 - **Configuration-Repo**: Defines client-specific environments and selects the appropriate image versions for deployment.
 
 This approach ensures flexibility, easy version control, and seamless updates—just by changing the image version in the deployment files.
+
+---
+
+## Question - 2 - Design the GitHub branch structure and CI/CD process so that you can manage all the pipeline easily 
+
+- In the test repository, we manage the application and build Docker images for each module. We follow a version-based branching strategy, where the branch name determines the image tag. Whenever there's an update in a specific version branch, the pipeline runs and updates the corresponding image.
+
+![alt text](images/image-2.png)
+
+- In the configuration repository, clients can use any version of the application for any environment. They can also choose specific image versions for different modules. For example, Client C1 in PROD might use v1 for the .NET module and v4 for the database module.
+
+
