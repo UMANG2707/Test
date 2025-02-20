@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [API-dotnet]  # List of modules
+        module: [API-dotnet, Log-Manager]  # List of modules
 
     steps:
       - name: Checkout Repository
