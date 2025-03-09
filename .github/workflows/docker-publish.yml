@@ -1,28 +1,69 @@
-name: Build and Push Multi-Module Docker Images
+name: Common CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+      - develop
       - 'v*'
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
-  build-and-push:
+  detect-changes:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        module: [API-dotnet, Log-Manager, Web-App-Angular, Mobile-Application, db]  # Add all modules here
-
+    outputs:
+      api-dotnet: ${{ steps.filter.outputs.api-dotnet }}
+      log-manager: ${{ steps.filter.outputs.log-manager }}
+      mobile-app: ${{ steps.filter.outputs.mobile-app }}
+      web-app: ${{ steps.filter.outputs.web-app }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v3
-        
-      - name: Extract Branch Name
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
 
-      - name: Convert Module Name to Lowercase
-        run: echo "MODULE_LOWER=$(echo '${{ matrix.module }}' | tr '[:upper:]' '[:lower:]' | tr -d ' ')" >> $GITHUB_ENV
+      - name: Detect Changes
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            api-dotnet:
+              - 'API-dotnet/**'
+            log-manager:
+              - 'Log-Manager/**'
+            mobile-app:
+              - 'Mobile-Application/**'
+            web-app:
+              - 'Web-App-Angular/**'
+
+  build-dotnet:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api-dotnet == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore Dependencies
+        run: |
+          cd API-dotnet
+          dotnet restore
+
+      - name: Build .NET App
+        run: |
+          cd API-dotnet
+          dotnet build --configuration Release
+
+      - name: Run Tests
+        run: |
+          cd API-dotnet
+          dotnet test --no-build --verbosity normal
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -30,10 +71,98 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
+      - name: Build & Push Docker Image
         run: |
-          docker build -t uamng/${{ env.MODULE_LOWER }}:${{ env.BRANCH_NAME }} ./${{ matrix.module }}
+          cd API-dotnet
+          docker build -t uamng/api-dotnet:${{ github.sha }} .
+          docker push uamng/api-dotnet:${{ github.sha }}
 
-      - name: Push Docker Image
+  build-log-manager:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.log-manager == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Docker Image
         run: |
-          docker push uamng/${{ env.MODULE_LOWER }}:${{ env.BRANCH_NAME }}
+          cd Log-Manager
+          docker build -t uamng/log-manager:${{ github.sha }} .
+          docker push uamng/log-manager:${{ github.sha }}
+
+  build-mobile-app:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.mobile-app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          cd Mobile-Application
+          npm install
+
+      - name: Build Mobile App
+        run: |
+          cd Mobile-Application
+          npm run build
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Docker Image
+        run: |
+          cd Mobile-Application
+          docker build -t uamng/mobile-app:${{ github.sha }} .
+          docker push uamng/mobile-app:${{ github.sha }}
+
+  build-angular:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.web-app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          cd Web-App-Angular
+          npm install
+
+      - name: Build Angular App
+        run: |
+          cd Web-App-Angular
+          ng build --configuration production
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Docker Image
+        run: |
+          cd Web-App-Angular
+          docker build -t uamng/web-app-angular:${{ github.sha }} .
+          docker push uamng/web-app-angular:${{ github.sha }}
