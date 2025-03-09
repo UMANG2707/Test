@@ -145,11 +145,14 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+        
       - name: Install Dependencies
         run: |
           cd Web-App-Angular
           npm install
-
+        
       - name: Build Angular App
         run: |
           cd Web-App-Angular
