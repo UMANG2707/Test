@@ -1,11 +1,10 @@
-# Use an official Python base image
-FROM python:3.9-slim
+FROM node:18-alpine
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Python script to the container
-COPY app.py .
+COPY package.json package-lock.json ./
+RUN npm install
 
-# Run the Python script
-CMD ["python", "app.py"]
+COPY . .
+
+CMD ["npm", "start"]
