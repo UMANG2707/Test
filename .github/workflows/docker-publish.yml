@@ -147,7 +147,7 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Debug: Check Directory Contents
+      - name: Debug Check Directory Contents
         run: |
           pwd
           ls -la Web-App-Angular
