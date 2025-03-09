@@ -139,24 +139,28 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensure full repo checkout
 
       - name: Set Up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install Angular CLI
-        run: npm install -g @angular/cli
-        
+      - name: Debug: Check Directory Contents
+        run: |
+          pwd
+          ls -la Web-App-Angular
+
       - name: Install Dependencies
         run: |
           cd Web-App-Angular
-          npm install
-        
+          npm ci
+
       - name: Build Angular App
         run: |
           cd Web-App-Angular
-          ng build --configuration production
+          npx ng build --configuration production
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
