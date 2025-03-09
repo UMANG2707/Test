@@ -1,2 +1,2 @@
 
-print("Yuhhh Buddy!! Web A pp")
+print("Yuhhh Buddy!! Web App")
