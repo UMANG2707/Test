@@ -140,17 +140,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensure full repo checkout
+          fetch-depth: 0
 
       - name: Set Up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Debug Check Directory Contents
-        run: |
-          pwd
-          ls -la Web-App-Angular
 
       - name: Install Dependencies
         run: |
