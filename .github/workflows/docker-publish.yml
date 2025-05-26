@@ -155,7 +155,7 @@ jobs:
       - name: Build Angular App
         run: |
           cd Web-App-Angular
-          npx ng build --configuration production
+          npx ng build
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
